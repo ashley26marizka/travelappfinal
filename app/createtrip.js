@@ -25,6 +25,7 @@ const CreateTrip = () => {
   const [tripName, setTripName] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [pickerMode, setPickerMode] = useState("date"); // "date" or "time"
   const [trips, setTrips] = useState([]);
   const [editingTrip, setEditingTrip] = useState(null);
 
@@ -109,14 +110,32 @@ const CreateTrip = () => {
     }
   };
 
-  const handleDateChange = (event, selectedDate) => {
+  const showPicker = (mode) => {
+    setPickerMode(mode);
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (event, selectedValue) => {
     if (event.type === "dismissed") {
       setShowDatePicker(false);
       return;
     }
-    const currentDate = selectedDate || date;
+
+    const currentDate = selectedValue || date;
+
+    if (pickerMode === "date") {
+      // Keep the time from original date
+      const updatedDate = new Date(currentDate);
+      updatedDate.setHours(date.getHours(), date.getMinutes());
+      setDate(updatedDate);
+    } else {
+      // Update time while keeping the original date
+      const updatedDate = new Date(date);
+      updatedDate.setHours(currentDate.getHours(), currentDate.getMinutes());
+      setDate(updatedDate);
+    }
+
     setShowDatePicker(false);
-    setDate(currentDate);
   };
 
   return (
@@ -131,16 +150,27 @@ const CreateTrip = () => {
       />
 
       <TouchableOpacity
-        onPress={() => setShowDatePicker(true)}
+        onPress={() => showPicker("date")}
         style={styles.datePickerButton}
       >
-        <Text style={styles.dateText}>Select Date: {date.toLocaleString()}</Text>
+        <Text style={styles.dateText}>
+          Select Date: {date.toLocaleDateString()}
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => showPicker("time")}
+        style={styles.datePickerButton}
+      >
+        <Text style={styles.dateText}>
+          Select Time: {date.toLocaleTimeString()}
+        </Text>
       </TouchableOpacity>
 
       {showDatePicker && (
         <DateTimePicker
           value={date}
-          mode="datetime"
+          mode={pickerMode}
           is24Hour={true}
           display={Platform.OS === "ios" ? "spinner" : "default"}
           onChange={handleDateChange}

@@ -7,36 +7,23 @@ import {
   StyleSheet,
   Text,
   Image,
+  Platform,
+  StatusBar,
 } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-
-import { StackActions } from '@react-navigation/native';
-
 import { useRouter } from 'expo-router';
+
 export default function HomeScreen() {
-  const router = useRouter(); 
+  const router = useRouter();
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-      <View
-          style={{
-            padding: 6,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderColor:'skyblue',
-          }}>
-               <Pressable onPress={() => router.push('/login')}
-            style={styles.button}
-          >
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Pressable onPress={() => router.push('/login')} style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
           </Pressable>
-      </View>
-      
+        </View>
+
         <View style={styles.titleWrapper}>
           <Text style={styles.titleText}>MyTrip</Text>
         </View>
@@ -54,9 +41,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.buttonWrapper}>
-          <Pressable onPress={() => router.push('/plan')}
-            style={styles.button}
-          >
+          <Pressable onPress={() => router.push('/plan')} style={styles.button}>
             <Text style={styles.buttonText}>Create your Trip</Text>
           </Pressable>
         </View>
@@ -65,15 +50,25 @@ export default function HomeScreen() {
   );
 }
 
-
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: 'white',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
+  scrollContent: {
+    paddingBottom: 20,
+  },
+  header: {
+    paddingTop: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderColor: 'skyblue',
+  },
+  
   titleWrapper: {
     alignItems: 'center',
-
     padding: 6,
   },
   titleText: {
@@ -82,7 +77,6 @@ const styles = StyleSheet.create({
   },
   yearWrapper: {
     alignItems: 'center',
-
     padding: 6,
   },
   yearText: {
@@ -96,9 +90,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 500,
-    height: 300,
+    width: 320,
+    height: 200,
     borderRadius: 10,
+    resizeMode: 'cover',
   },
   subtitleWrapper: {
     marginTop: 10,
