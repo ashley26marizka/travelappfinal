@@ -18,12 +18,6 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Pressable onPress={() => router.push('/login')} style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
-          </Pressable>
-        </View>
-
         <View style={styles.titleWrapper}>
           <Text style={styles.titleText}>MyTrip</Text>
         </View>
@@ -69,7 +63,7 @@ const styles = StyleSheet.create({
   
   titleWrapper: {
     alignItems: 'center',
-    padding: 6,
+    paddingTop: 60,
   },
   titleText: {
     fontSize: 25,

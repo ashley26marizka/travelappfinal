@@ -12,7 +12,6 @@ import {
   collection, addDoc, getDocs, updateDoc, deleteDoc, doc, Timestamp
 } from "firebase/firestore";
 
-// Notification handler setup
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -25,7 +24,7 @@ const CreateTrip = () => {
   const [tripName, setTripName] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [pickerMode, setPickerMode] = useState("date"); // "date" or "time"
+  const [pickerMode, setPickerMode] = useState("date"); 
   const [trips, setTrips] = useState([]);
   const [editingTrip, setEditingTrip] = useState(null);
 
@@ -124,12 +123,10 @@ const CreateTrip = () => {
     const currentDate = selectedValue || date;
 
     if (pickerMode === "date") {
-      // Keep the time from original date
       const updatedDate = new Date(currentDate);
       updatedDate.setHours(date.getHours(), date.getMinutes());
       setDate(updatedDate);
     } else {
-      // Update time while keeping the original date
       const updatedDate = new Date(date);
       updatedDate.setHours(currentDate.getHours(), currentDate.getMinutes());
       setDate(updatedDate);

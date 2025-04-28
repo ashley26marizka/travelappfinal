@@ -18,7 +18,8 @@ const PlanTrip = () => {
           { title: "🧳 To pack", subtitle: "Add items", route: "/packing" },
           { title: "📅 Itinerary", subtitle: "Plan your trip", route: "/createtrip" },
           { title: "💰 Budget", subtitle: "Calculate expenses", route: "/expenses" },
-          { title: "📸 Images",subtitle:"Your Memories",route:"/image"},
+          { title: "📸 Images",subtitle:"Your Memories",route:"/image"},          
+          { title: "🚌 Bookings", subtitle: "Book your tickets", route: "/bookings" },
         ].map((item, index) => (
           <MotiView
             from={{ translateX: 300, opacity: 0 }}

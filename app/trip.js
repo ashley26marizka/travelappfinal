@@ -15,18 +15,20 @@ import RNPickerSelect from "react-native-picker-select";
 const SERPAPI_KEY = "3901a0e749162c9b454aae3c72f6fca2d597fd2ec0ce952a3c2854d6de8354ca";
 
 const DESTINATION_TYPES = [
-  { label: "Popular", value: "Best travel destinations" },
-  { label: "Beaches", value: "Best beach destinations" },
-  { label: "Mountains", value: "Best mountain destinations" },
-  { label: "Historical", value: "Best historical destinations" },
+  { label: "Popular", value: "Best travel destinations in India" },
+  { label: "Beaches", value: "Best beach destinations in India" },
+  { label: "Mountains", value: "Best mountain destinations in India" },
+  { label: "Historical", value: "Best historical destinations in India" },
 ];
+
 
 const fetchDestinations = async (query) => {
   try {
     const response = await axios.get("https://serpapi.com/search.json", {
       params: {
-        engine: "google", // FIXED: use google instead of google_travel
+        engine: "google", 
         q: query,
+        location: "India",
         api_key: SERPAPI_KEY,
       },
     });
@@ -122,7 +124,7 @@ const Tripping = () => {
           renderItem={({ item }) => (
             <DestinationCard
               destination={item}
-              onPress={() =>
+               onPress={() =>
                 router.push({
                   pathname: "/destinationdetails",
                   params: { destination: JSON.stringify(item) },

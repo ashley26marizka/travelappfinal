@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
-import { PieChart, BarChart } from 'react-native-chart-kit';
+import { PieChart } from 'react-native-chart-kit';
 import { db, auth } from '../firebaseconfig.js';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
 
