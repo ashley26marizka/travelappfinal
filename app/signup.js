@@ -1,104 +1,120 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import {
+  View, Text, TextInput, TouchableOpacity, Alert, StyleSheet
+} from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { auth } from "../firebaseconfig.js"; // Import Firebase auth
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseconfig.js";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile
+} from "firebase/auth";
 import { useRouter } from "expo-router";
 
 const SignUpScreen = () => {
-    const router = useRouter();
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-    const handleSignUp = async () => {
-        if (password !== confirmPassword) {
-            Alert.alert("Error", "Passwords do not match");
-            return;
-        }
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            Alert.alert("Account Created Successfully");
-            router.push("/plan"); // Navigate to the next screen
-        } catch (error) {
-            Alert.alert("Error", JSON.stringify(error, null, 2));
+  const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
 
-        }
-    };
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.card}>
-                <View style={styles.header}>
-                    <MaterialIcons name="location-on" size={28} color="#1E90FF" />
-                    <Text style={styles.title}>Tour Buddy</Text>
-                </View>
-                <Text style={styles.subtitle}>Create Your Travel Account</Text>
+      // Set display name for better emails
+      await updateProfile(userCredential.user, {
+        displayName: fullName
+      });
 
-                <View style={styles.inputContainer}>
-                    <FontAwesome name="user" size={20} color="gray" />
-                    <TextInput 
-                        style={styles.input} 
-                        placeholder="Full Name" 
-                        placeholderTextColor="gray"
-                        value={fullName}
-                        onChangeText={setFullName}
-                    />
-                </View>
+      // Send verification email
+      await sendEmailVerification(userCredential.user);
+      Alert.alert(
+        "Verify Email",
+        "A verification email has been sent. Please check your inbox or spam folder."
+      );
 
-                <View style={styles.inputContainer}>
-                    <FontAwesome name="envelope" size={20} color="gray" />
-                    <TextInput 
-                        style={styles.input} 
-                        placeholder="Email" 
-                        placeholderTextColor="gray"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                    />
-                </View>
+      router.push("/login");
+    } catch (error) {
+      Alert.alert("Signup Error", error.message);
+    }
+  };
 
-                <View style={styles.inputContainer}>
-                    <FontAwesome name="lock" size={20} color="gray" />
-                    <TextInput 
-                        style={styles.input} 
-                        placeholder="Password" 
-                        placeholderTextColor="gray" 
-                        secureTextEntry 
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-                </View>
-
-                <View style={styles.inputContainer}>
-                    <FontAwesome name="lock" size={20} color="gray" />
-                    <TextInput 
-                        style={styles.input} 
-                        placeholder="Confirm Password" 
-                        placeholderTextColor="gray" 
-                        secureTextEntry 
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                    />
-                </View>
-
-                <TouchableOpacity style={styles.signupButton} onPress={handleSignUp}>
-                    <Text style={styles.signupText}>Sign Up</Text>
-                </TouchableOpacity>
-
-                <Text style={styles.loginText}>
-                    Already have an account? <Text style={styles.loginLink} onPress={() => router.push("/login")}>Login</Text>
-                </Text>
-            </View>
+  return (
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <MaterialIcons name="location-on" size={28} color="#1E90FF" />
+          <Text style={styles.title}>Tour Buddy</Text>
         </View>
-    );
+        <Text style={styles.subtitle}>Create Your Travel Account</Text>
+
+        <View style={styles.inputContainer}>
+          <FontAwesome name="user" size={20} color="gray" />
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            placeholderTextColor="gray"
+            value={fullName}
+            onChangeText={setFullName}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <FontAwesome name="envelope" size={20} color="gray" />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="gray"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <FontAwesome name="lock" size={20} color="gray" />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="gray"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <FontAwesome name="lock" size={20} color="gray" />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor="gray"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.signupButton} onPress={handleSignUp}>
+          <Text style={styles.signupText}>Sign Up</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.loginText}>
+          Already have an account?{" "}
+          <Text style={styles.loginLink} onPress={() => router.push("/login")}>
+            Login
+          </Text>
+        </Text>
+      </View>
+    </View>
+  );
 };
-
-// Styles remain the same
-
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -173,3 +189,4 @@ const styles = StyleSheet.create({
 });
 
 export default SignUpScreen;
+
